@@ -1,5 +1,4 @@
 use core::panic;
-use std::env::var;
 #[cfg(target_os = "linux")]
 fn main() {
     let filesystem =

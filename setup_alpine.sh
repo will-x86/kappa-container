@@ -7,17 +7,17 @@ else
     exit 1
 fi
 
-mkdir -p "$ALPINE_PATH"
+mkdir -p "$CONTAINER_PATH"
 
 docker pull alpine:latest
 
 container_id=$(docker create alpine:latest)
 
-docker export $container_id > "$ALPINE_PATH/alpine-rootfs.tar"
+docker export $container_id > "$CONTAINER_PATH/alpine-rootfs.tar"
 
-tar -xf "$ALPINE_PATH/alpine-rootfs.tar" -C "$ALPINE_PATH"
+tar -xf "$CONTAINER_PATH/alpine-rootfs.tar" -C "$CONTAINER_PATH"
 
 docker rm $container_id
-rm "$ALPINE_PATH/alpine-rootfs.tar"
+rm "$CONTAINER_PATH/alpine-rootfs.tar"
 
-echo "Alpine filesystem extracted to $ALPINE_PATH"
+echo "Alpine filesystem extracted to $CONTAINER_PATH"

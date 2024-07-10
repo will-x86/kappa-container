@@ -29,13 +29,13 @@ Kappa Container is a simple containerization tool that allows you to run command
 
 2. Build the project:
    ```
-   cargo build --release
+   sudo cargo build --release
    ```
 
 3. Set up the Alpine Linux rootfs:
    - Create a `.env` file in the project root with the following content:
      ```
-     ALPINE_PATH=/path/to/your/desired/alpine/rootfs
+     CONTAINER_PATH=/path/to/your/desired/containers/live
      ```
    - Run the provided shell script to set up the Alpine Linux rootfs:
      ```
@@ -53,7 +53,7 @@ Kappa Container is a simple containerization tool that allows you to run command
 The primary command to run a shell inside the container is:
 
 ```
-sudo ./target/release/kappa-container run /bin/sh
+sudo ./target/release/kappa-container run alpine-rootfs /bin/sh
 ```
 
 This will start a new shell inside the container environment.
@@ -61,7 +61,7 @@ This will start a new shell inside the container environment.
 You can also run other commands. For example:
 
 ```
-sudo ./target/release/kappa-container run /bin/ls -l 
+sudo ./target/release/kappa-container run alpine-rootfs /bin/ls -l 
 ```
 
 ## How it works
@@ -87,29 +87,30 @@ else
     exit 1
 fi
 
-mkdir -p "$ALPINE_PATH"
+mkdir -p "$CONTAINER_PATH"
 
 docker pull alpine:latest
 
 container_id=$(docker create alpine:latest)
 
-docker export $container_id > "$ALPINE_PATH/alpine-rootfs.tar"
+docker export $container_id > "$CONTAINER_PATH/alpine-rootfs.tar"
 
-tar -xf "$ALPINE_PATH/alpine-rootfs.tar" -C "$ALPINE_PATH"
+tar -xf "$CONTAINER_PATH/alpine-rootfs.tar" -C "$CONTAINER_PATH"
 
 docker rm $container_id
-rm "$ALPINE_PATH/alpine-rootfs.tar"
+rm "$CONTAINER_PATH/alpine-rootfs.tar"
 
-echo "Alpine filesystem extracted to $ALPINE_PATH"
+echo "Alpine filesystem extracted to $CONTAINER_PATH"
 ```
 
-This script pulls the latest Alpine Linux image, extracts its filesystem to the specified `ALPINE_PATH`, and cleans up temporary files and containers.
+This script pulls the latest Alpine Linux image, extracts its filesystem to the specified `CONTAINER_PATH`, and cleans up temporary files and containers.
 
 ## Limitations
 
 - This is a basic implementation and lacks many features of full-fledged container runtimes
 - It requires root privileges to run
-- Only tested on Linux systems
+- Will not work on windows
+- Requires cgroup v2 and a systemd system
 
 ## Contributing
 
