@@ -19,7 +19,8 @@ struct Args {
 }
 
 #[cfg(cgroup_v2)]
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
     use run::run::cleanup_cgroup;
     env_logger::init();
 
@@ -47,7 +48,7 @@ fn main() -> anyhow::Result<()> {
             info!("Container runtime completed successfully");
         }
         "pull" => {
-            pull(&args.img)?;
+            pull(&args.img).await?;
         }
         _ => {
             error!("Unimplemented command: {}", args.cmd);
