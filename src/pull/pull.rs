@@ -21,8 +21,7 @@ fn map_architecture(arch: &str) -> &'static str {
         _ => "unknown",
     }
 }
-
-pub async fn pull(image: &str) -> Result<()> {
+fn parse_version(image: &str) -> Result<(String, String, String)> {
     let (namespace, repository, version) = if image.contains('/') {
         let parts: Vec<&str> = image.split('/').collect();
         if parts.len() >= 3 {
@@ -45,7 +44,10 @@ pub async fn pull(image: &str) -> Result<()> {
             "latest".to_string(),
         )
     };
-
+    Ok((namespace, repository, version))
+}
+pub async fn pull(image: &str) -> Result<()> {
+    let (namespace, repository, version) = parse_version(image)?;
     info!(
         "Attempting to pull image with namespace '{}' and repository '{}' and version '{}'",
         namespace, repository, version

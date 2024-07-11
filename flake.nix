@@ -24,7 +24,9 @@
         with pkgs; {
           devShells.default = mkShell {
             LD_LIBRARY_PATH = lib.makeLibraryPath [openssl];
+            #nativeBuildInputs = [ pkg-config ];
             buildInputs = [
+            #openssl_3_3
               openssl
               pkg-config
               eza
@@ -32,12 +34,13 @@
               rust-bin.stable.latest.default
               rust-analyzer
               # cargo-watch
-              # pkgs.sqlite
+              pkgs.sqlite
               # pkgs.bunyan-rs
               pkgs.zsh
             ];
 
             shellHook = ''
+
               alias ls=eza
               export PATH=$PATH:${pkgs.rust-analyzer}/bin
               alias find=fd
