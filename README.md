@@ -34,6 +34,7 @@ Kappa Container is a simple containerization tool that allows you to run command
 
 3. Set up the Alpine Linux rootfs:
    - Create a `.env` file in the project root with the following content:
+   - Path is relative, "alp" will go into $CURRENT_DIR/alp/...
      ```
      CONTAINER_PATH=/path/to/your/desired/containers/live
      ```

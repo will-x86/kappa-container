@@ -31,7 +31,7 @@
               pkg-config
               eza
               fd
-              rust-bin.stable.latest.default
+              rust-bin.nightly.latest.default
               rust-analyzer
               # cargo-watch
               pkgs.sqlite

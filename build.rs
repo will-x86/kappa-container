@@ -1,19 +1,23 @@
-use core::panic;
-#[cfg(target_os = "linux")]
-fn main() {
-    let filesystem =
-        std::fs::read_to_string("/proc/filesystems").expect("Failed to read /proc/filesystems");
-    let cgroup2_supported = filesystem.contains("cgroup2");
+use std::env;
+use std::fs;
 
-    if cgroup2_supported {
-        println!("cargo:rustc-cfg=cgroup_v2");
-        println!("cargo:rustc-cfg=feature=\"cgroup-v2\"");
-    } else {
-        panic!("cGroup v1 is not supported by this tool");
+fn main() {
+    if env::consts::OS != "linux" {
+        panic!("This program only supports Linux");
+    }
+
+    let cgroup2_mounted = is_cgroup2_mounted();
+    if !cgroup2_mounted {
+        panic!("This program requires cgroup v2 support");
     }
 }
 
-#[cfg(not(target_os = "linux"))]
-fn main() {
-    panic!("Non - linux distros are not supported")
+fn is_cgroup2_mounted() -> bool {
+    let mountinfo = match fs::read_to_string("/proc/self/mountinfo") {
+        Ok(contents) => contents,
+        Err(_) => return false,
+    };
+
+    mountinfo.lines().any(|line| line.contains("cgroup2"))
 }
+
